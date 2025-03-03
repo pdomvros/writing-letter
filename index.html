@@ -1,1 +1,454 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Συγγραφή Επιστολής (Γυμνάσιο)</title>
+  <!-- Import Comfortaa font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Comfortaa', Arial, sans-serif;
+      background-color: #000000; /* Dark theme */
+      color: #ffffff;
+      margin: 0;
+      padding: 20px;
+    }
+    .creator-info {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: gold;
+      text-shadow: 2px 2px 8px rgba(255,215,0,0.7);
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #111111;
+      border-radius: 10px;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.7);
+      border: 2px solid rgba(255,255,255,0.2);
+      margin-bottom: 20px;
+    }
+    .accordion {
+      background-color: #444;
+      color: white;
+      cursor: pointer;
+      padding: 15px;
+      width: 100%;
+      text-align: left;
+      border: none;
+      outline: none;
+      font-size: 18px;
+      transition: all 0.3s ease-in-out;
+      border-radius: 8px;
+      margin-top: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+    }
+    .accordion:hover {
+      background-color: #666;
+    }
+    .panel {
+      display: none;
+      padding: 15px;
+      border-radius: 8px;
+      border: 2px solid rgba(255,255,255,0.3);
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.6);
+      margin-top: 5px;
+      background-color: #222;
+    }
+    .panel p, .panel ul {
+      margin: 0;
+      padding: 0;
+    }
+    /* Color-coded expansions */
+    .datePlace { background-color: #B30000; }
+    .prosofonisi { background-color: #B36B00; }
+    .periexomeno { background-color: #8C00B3; }
+    .epifonisi { background-color: #006BB3; }
+
+    .button {
+      display: inline-block;
+      padding: 12px;
+      margin: 5px 0;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 600;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+    }
+    .button:hover {
+      background-color: #45a049;
+    }
+    .topic-container {
+      margin-top: 20px;
+      background-color: #B30000;
+      padding: 15px;
+      border-radius: 8px;
+      border: 2px solid rgba(255,255,255,0.3);
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.6), 0 8px 15px rgba(0,0,0,0.7);
+      text-align: center;
+    }
+    #randomTopic {
+      background-color: rgba(255,255,255,0.1);
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid rgba(255,255,255,0.3);
+      min-height: 50px;
+      box-shadow: inset 0 0 8px rgba(0,0,0,0.6);
+      margin-bottom: 10px;
+    }
+    .suggestions-panel {
+      background-color: rgba(255,255,255,0.1);
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid rgba(255,255,255,0.3);
+      min-height: 50px;
+      box-shadow: inset 0 0 8px rgba(0,0,0,0.6);
+      margin-top: 10px;
+      text-align: left;
+    }
+    .essay-section {
+      margin-top: 20px;
+      background-color: #006BB3;
+      padding: 15px;
+      border-radius: 8px;
+      border: 2px solid rgba(255,255,255,0.3);
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.6), 0 8px 15px rgba(0,0,0,0.7);
+    }
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      color: #000;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+    }
+
+    /* Popup styling for Language Help */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+    }
+    .popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 700px;
+      background: #ffffff;
+      padding: 20px;
+      box-shadow: 0 8px 12px rgba(0,0,0,0.4);
+      border-radius: 10px;
+      z-index: 1000;
+      overflow-y: auto;
+      max-height: 80vh;
+      color: #000000;
+    }
+    .close {
+      float: right;
+      font-size: 24px;
+      cursor: pointer;
+      margin-top: -10px;
+    }
+    .popup h2 {
+      margin-top: 0;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="creator-info">Δημιουργία: Παναγιώτης Δόμβρος 2025 (CC BY-NC)</div>
+
+<h1>📨 Συγγραφή Επιστολής </h1>
+
+<!-- 4 Expandable Sections: 1) Τόπος-Ημερομηνία, 2) Προσφώνηση, 3) Περιεχόμενο (Πρόλογος/Κυρίως/Επίλογος), 4) Επιφώνηση & Υπογραφή -->
+<div class="container">
+    <button class="accordion datePlace">1️⃣ Τόπος - Ημερομηνία</button>
+    <div class="panel">
+        <p>📌 Αναφέρετε τον τόπο και την ημερομηνία σύνταξης της επιστολής (π.χ. Αθήνα, 14 Οκτωβρίου 2023).</p>
+        <p><em>«Αθήνα, 14 Οκτωβρίου 2023»</em></p>
+    </div>
+
+    <button class="accordion prosofonisi">2️⃣ Προσφώνηση</button>
+    <div class="panel">
+        <p>📌 Απευθυνθείτε στον παραλήπτη σας (φιλικά ή επίσημα):</p>
+        <ul>
+            <li>Επίσημη: Αξιότιμε κ.Διευθυντά, Κύριε Δήμαρχε</li>
+            <li>Φιλική: Αγαπημένη μου Ελένη, Αγαπητέ Γιώργο</li>
+        </ul>
+        <p><em>«Αγαπητέ κύριε Δήμαρχε» ή «Αγαπημένη μου αδερφή»</em></p>
+    </div>
+
+    <button class="accordion periexomeno">3️⃣ Περιεχόμενο (Πρόλογος - Κυρίως Μέρος - Επίλογος)</button>
+    <div class="panel">
+        <p>📌 Το κύριο σώμα της επιστολής περιλαμβάνει:</p>
+        <ul>
+            <li><strong>Πρόλογος:</strong> Αφορμή/στόχος, γιατί γράφετε</li>
+            <li><strong>Κυρίως Μέρος:</strong> Ανάλυση, επιχειρήματα, παράπονα/προτάσεις</li>
+            <li><strong>Επίλογος:</strong> Ανακεφαλαίωση & κάλεσμα για ανταπόκριση</li>
+        </ul>
+        <p><em>«Σήμερα θα ήθελα να μοιραστώ τις σκέψεις μου για... Ελπίζω να βρω κατανόηση...»</em></p>
+    </div>
+
+    <button class="accordion epifonisi">4️⃣ Επιφώνηση & Υπογραφή</button>
+    <div class="panel">
+        <p>📌 Επίσημο ή φιλικό κλείσιμο, ανάλογα με το ύφος:</p>
+        <ul>
+            <li>Φιλική επιστολή: «Με αγάπη», «Σε φιλώ», «Περιμένω νέα σου», Υπογραφή</li>
+            <li>Επίσημη επιστολή: «Με εκτίμηση», «Με σεβασμό», Υπογραφή</li>
+        </ul>
+        <p><em>«Με εκτίμηση, Γεώργιος Γεωργίου» ή «Με αγάπη, Χριστίνα»</em></p>
+    </div>
+</div>
+
+<!-- Button for Language Help Popup -->
+<div class="container">
+    <button class="button" onclick="openPopup()">📚 Γλωσσική Βοήθεια</button>
+</div>
+
+<!-- Popup for Language Help (fusing your PDF content) -->
+<div id="overlay" class="overlay"></div>
+<div id="popup" class="popup">
+    <span class="close" onclick="closePopup()">&times;</span>
+    <h2>📖 Γλωσσική Βοήθεια - Συγγραφή Επιστολής</h2>
+    <p><strong>Σύμφωνα με το υλικό (epistoli_c_gym.pdf), βασικά σημεία:</strong></p>
+
+    <h3>Κοινά Χαρακτηριστικά Επιστολής</h3>
+    <ul>
+        <li>Τυπική δομή: τόπος-ημ/νία, προσφώνηση, περιεχόμενο (πρόλογος, κύριο μέρος, επίλογος), επιφώνηση, υπογραφή</li>
+        <li>Ύφος: Σαφήνεια, ευγένεια, φυσικότητα</li>
+        <li>Προσέξτε το <strong>επικοινωνιακό πλαίσιο</strong> (πομπός, δέκτης, σκοπός)</li>
+    </ul>
+
+    <h3>Επίσημη Επιστολή</h3>
+    <p>Αν ο παραλήπτης είναι επίσημο πρόσωπο/οργανισμός:</p>
+    <ul>
+        <li>Προσφώνηση: «Αξιότιμε κύριε Δήμαρχε…», «Κύριε Διευθυντά…»</li>
+        <li>Αναφέρουμε ποιοι είμαστε & γιατί γράφουμε</li>
+        <li>Προσέχουμε το ύφος (σεβασμός, σοβαρότητα)</li>
+        <li>Χρησιμοποιούμε φράσεις όπως: «Πιστεύοντας στη διάθεσή σας να βοηθήσετε…», «Αναμένουμε τη θετική σας ανταπόκριση…»</li>
+    </ul>
+
+    <h3>Φιλική Επιστολή</h3>
+    <p>Αν απευθυνόμαστε σε φίλο/συγγενή:</p>
+    <ul>
+        <li>Προσφώνηση: «Αγαπημένε μου φίλε…», «Γλυκιά μου αδερφή…»</li>
+        <li>Ύφος πιο ζεστό & προσωπικό</li>
+        <li>Χρησιμοποιούμε φράσεις όπως: «Μου λείπεις…», «Περιμένω με αγωνία την απάντησή σου…»</li>
+    </ul>
+
+    <h3>Χρήσιμες Φράσεις</h3>
+    <ul>
+        <li><strong>Για επίσημη:</strong> «Με σεβασμό», «Με εκτίμηση», «Αξιότιμε κύριε…», «Ως μαθητές, επιθυμούμε να…»</li>
+        <li><strong>Για φιλική:</strong> «Σε φιλώ», «Με αγάπη», «Περιμένω νέα σου…»</li>
+        <li><strong>Κλείσιμο:</strong> «Ανυπομονώ για την απάντησή σας / σου», «Σας/Σε ευχαριστώ εκ των προτέρων…»</li>
+    </ul>
+</div>
+
+<!-- Container for 20 random letter topics, each with stage-based suggestions -->
+<div class="container">
+    <h2 style="text-align:center;">🎲 Θέμα για Επιστολή</h2>
+    <div style="text-align:center;">
+      <button class="button" onclick="generateRandomLetter()">Δημιουργία Τυχαίου Θέματος</button>
+    </div>
+
+    <div class="topic-container">
+        <h3>📝 Θέμα Επιστολής</h3>
+        <div id="randomTopic">Πατήστε το κουμπί για να λάβετε ένα τυχαίο θέμα.</div>
+
+        <!-- PlaceDate suggestions -->
+        <div class="suggestions-panel" id="datePlaceSugg">Τόπος & Ημερομηνία (ιδέες)</div>
+
+        <!-- Prosofonisi suggestions -->
+        <div class="suggestions-panel" id="prosofonisiSugg">Προσφώνηση (ιδέες)</div>
+
+        <!-- Periexomeno suggestions (Πρόλογος-Κυρίως-Επίλογος) -->
+        <div class="suggestions-panel" id="periexomenoSugg">Περιεχόμενο (Πρόλογος/Κυρίως/Επίλογος) (ιδέες)</div>
+
+        <!-- Epifonisi suggestions -->
+        <div class="suggestions-panel" id="epifonisiSugg">Επιφώνηση & Υπογραφή (ιδέες)</div>
+    </div>
+
+    <div class="essay-section">
+        <h3>📝 Συγγραφή Επιστολής</h3>
+        <textarea id="letterText" placeholder="Γράψτε εδώ την επιστολή σας..."></textarea>
+        <button class="button" onclick="copyAndSubmit()">📋 Αντιγραφή & Υποβολή</button>
+    </div>
+</div>
+
+<script>
+  // Expandable sections for the four main parts
+  const acc = document.getElementsByClassName('accordion');
+  for (let i = 0; i < acc.length; i++) {
+    acc[i].addEventListener('click', function() {
+      this.classList.toggle('active');
+      let panel = this.nextElementSibling;
+      if (panel.style.display === 'block') {
+        panel.style.display = 'none';
+      } else {
+        panel.style.display = 'block';
+      }
+    });
+  }
+
+  // Overlay & Popup for Language Help
+  function openPopup() {
+    document.getElementById('overlay').style.display = 'block';
+    document.getElementById('popup').style.display = 'block';
+  }
+  function closePopup() {
+    document.getElementById('overlay').style.display = 'none';
+    document.getElementById('popup').style.display = 'none';
+  }
+
+  // 20 random letter topics, each with stage-based suggestions:
+  // (We combine formal/informal to show variety)
+  const letterTopics = [
+    {
+      topic: "Φιλική Επιστολή: Προς έναν παλιό συμμαθητή που μετακόμισε",
+      placeDate: [
+        "π.χ. Πάτρα, 15 Νοεμβρίου 2023",
+        "Σχολείο, 10 Οκτωβρίου 2023"
+      ],
+      prosofonisi: [
+        "Αγαπημένε/η μου φίλε/η...",
+        "Χαίρομαι που μπορώ επιτέλους να σου γράψω..."
+      ],
+      periexomeno: [
+        "Πρόλογος: πώς περνάει η σχολική ζωή, τι άλλαξε από όταν έφυγε.",
+        "Κυρίως: ζητήστε να μάθετε για την καινούργια πόλη του/της, τα νέα του/της.",
+        "Επίλογος: προσκαλέστε τον/την να σας επισκεφτεί."
+      ],
+      epifonisi: [
+        "Κλείσιμο φιλικό: «Με αγάπη», «Με πολλή χαρά περιμένω νέα σου...»",
+        "Υπογραφή: Το όνομά σας (π.χ. Βασίλης)."
+      ]
+    },
+    {
+      topic: "Επίσημη Επιστολή: Προς τον Δήμαρχο για καθαριότητα στην περιοχή",
+      placeDate: [
+        "π.χ. Λάρισα, 20 Σεπτεμβρίου 2023",
+        "Βόλος, 1 Δεκεμβρίου 2023"
+      ],
+      prosofonisi: [
+        "Αξιότιμε κύριε Δήμαρχε,",
+        "Κύριε Δήμαρχε,"
+      ],
+      periexomeno: [
+        "Πρόλογος: Παρουσιάστε ποιοι είστε (μαθητές κ.λπ.) & τον λόγο που γράφετε.",
+        "Κυρίως: Αναφερθείτε στα προβλήματα καθαριότητας, π.χ. σκουπίδια σε κεντρικούς δρόμους.",
+        "Επίλογος: Προτείνετε λύσεις & ζητήστε συνεργασία."
+      ],
+      epifonisi: [
+        "Κλείσιμο ευγενικό: «Με εκτίμηση», «Ευχαριστούμε εκ των προτέρων»",
+        "Υπογραφή: Ονόματα/υπογραφή σας."
+      ]
+    }
+    // ... προσθέστε 18 ακόμα θέματα, για σύνολο 20 ...
+    ,
+    {
+      topic: "Φιλική Επιστολή: Σε ξάδερφό σας που σπουδάζει στο εξωτερικό",
+      placeDate: [
+        "Θεσσαλονίκη, 10 Ιανουαρίου 2024",
+        "Κρήτη, 5 Μαρτίου 2024"
+      ],
+      prosofonisi: [
+        "Αγαπημένε ξάδερφε...",
+        "Αγαπητή μου ξαδέρφη..."
+      ],
+      periexomeno: [
+        "Πρόλογος: ρωτήστε πώς είναι η ζωή εκεί, οι σπουδές του/της.",
+        "Κυρίως: μιλήστε για τα οικογενειακά νέα & νέα του σχολείου σας.",
+        "Επίλογος: εκφράστε την επιθυμία να ειδωθείτε ξανά."
+      ],
+      epifonisi: [
+        "«Με πολλή αγάπη» ή «Σε φιλώ»",
+        "Υπογραφή: Το όνομά σας."
+      ]
+    }
+  ];
+
+  function generateRandomLetter() {
+    // Pick a random item from letterTopics
+    const randomIndex = Math.floor(Math.random() * letterTopics.length);
+    const chosen = letterTopics[randomIndex];
+
+    // Update the DOM
+    document.getElementById('randomTopic').textContent = chosen.topic;
+    document.getElementById('datePlaceSugg').innerHTML =
+      "<strong>Τόπος & Ημερομηνία:</strong><br><ul><li>" + chosen.placeDate.join("</li><li>") + "</li></ul>";
+    document.getElementById('prosofonisiSugg').innerHTML =
+      "<strong>Προσφώνηση:</strong><br><ul><li>" + chosen.prosofonisi.join("</li><li>") + "</li></ul>";
+    document.getElementById('periexomenoSugg').innerHTML =
+      "<strong>Περιεχόμενο (Πρόλογος - Κυρίως - Επίλογος):</strong><br><ul><li>" + chosen.periexomeno.join("</li><li>") + "</li></ul>";
+    document.getElementById('epifonisiSugg').innerHTML =
+      "<strong>Επιφώνηση & Υπογραφή:</strong><br><ul><li>" + chosen.epifonisi.join("</li><li>") + "</li></ul>";
+  }
+
+  // Copy & Submit logic
+  function fallbackCopyTextToClipboard(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      document.execCommand('copy');
+      alert('Η επιστολή σας αντιγράφηκε (fallback)!');
+    } catch (err) {
+      alert('Αποτυχία αντιγραφής ακόμη και με fallback.');
+    }
+    document.body.removeChild(textArea);
+  }
+
+  function copyAndSubmit() {
+    const letterText = document.getElementById('letterText').value;
+    if (!letterText) {
+      // If no text, just open Tally
+      window.open('https://tally.so/r/meY48e','_blank');
+      return;
+    }
+    if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(letterText)
+        .then(() => {
+          alert('Η επιστολή σας αντιγράφηκε στο πρόχειρο!');
+          window.open('https://tally.so/r/meY48e', '_blank');
+        })
+        .catch(err => {
+          console.error('Σφάλμα αντιγραφής:', err);
+          fallbackCopyTextToClipboard(letterText);
+          window.open('https://tally.so/r/meY48e', '_blank');
+        });
+    } else {
+      fallbackCopyTextToClipboard(letterText);
+      window.open('https://tally.so/r/meY48e', '_blank');
+    }
+  }
+</script>
+</body>
+</html>
 
